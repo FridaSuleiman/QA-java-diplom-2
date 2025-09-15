@@ -33,4 +33,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
 .allure
