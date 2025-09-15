@@ -4,6 +4,7 @@ target/
 !**/src/test/**/target/
 
 ### IntelliJ IDEA ###
+.allure
 .idea
 *.iws
 *.iml
@@ -34,4 +35,3 @@ build/
 ### Mac OS ###
 .DS_Store
 
-.allure
