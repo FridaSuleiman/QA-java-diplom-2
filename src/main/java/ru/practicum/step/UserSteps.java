@@ -7,7 +7,6 @@ import ru.practicum.data.UpdateUserRequest;
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 
-
 public class UserSteps {
     private final UserClient userClient;
 
@@ -23,7 +22,6 @@ public class UserSteps {
                 .name(name)
                 .build();
 
-
         return userClient.createUser(createUserRequest)
                 .then();
     }
@@ -35,6 +33,16 @@ public class UserSteps {
                 .name(name)
                 .build();
 
+        return userClient.createUser(createUserRequest)
+                .then();
+    }
+
+    @Step("Создание пользователя без email")
+    public ValidatableResponse createUserWithoutEmail(String password, String name) {
+        CreateUserRequest createUserRequest = CreateUserRequest.builder()
+                .password(password)
+                .name(name)
+                .build();
 
         return userClient.createUser(createUserRequest)
                 .then();
@@ -56,7 +64,6 @@ public class UserSteps {
         return loginUser(email, password)
                 .extract()
                 .path("accessToken");
-
     }
 
     @Step("Удаление пользователя")
@@ -94,5 +101,4 @@ public class UserSteps {
         return userClient.updateUserWithoutAuth(updateUserRequest)
                 .then();
     }
-
 }

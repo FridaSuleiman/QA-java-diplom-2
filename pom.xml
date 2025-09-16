@@ -117,19 +117,19 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Основная зависимость SLF4J API -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
         <!-- Добавлена зависимость SLF4J Simple для решения проблемы с логгером -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
             <scope>test</scope>
-        </dependency>
-
-        <!-- Также можно добавить основную зависимость SLF4J API для полноты -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
 </project>

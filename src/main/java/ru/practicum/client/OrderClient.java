@@ -1,8 +1,7 @@
 package ru.practicum.client;
+
 import ru.practicum.data.CreateOrderRequest;
 import io.restassured.response.Response;
-
-
 
 public class OrderClient extends RestClient {
 
@@ -22,21 +21,18 @@ public class OrderClient extends RestClient {
 
     public Response createOrderWithoutAuth(CreateOrderRequest createOrderRequest) {
         return getDefaultRequestSpecification()
-
                 .body(createOrderRequest)
                 .when()
                 .post("/orders");
     }
 
     public Response getUserOrdersWithoutAuth() {
-        // Получить заказы без авторизации
         return getDefaultRequestSpecification()
                 .when()
                 .get("/orders");
     }
 
     public Response getUserOrdersWithAuth(String accessToken) {
-        // Получить заказы с авторизацией
         return getDefaultRequestSpecification()
                 .header("authorization", accessToken)
                 .when()
@@ -44,10 +40,8 @@ public class OrderClient extends RestClient {
     }
 
     public Response getAllOrders() {
-        // Получить все заказы (регистрация не требуется)
         return getDefaultRequestSpecification()
                 .when()
                 .get("/orders/all");
     }
-
 }
