@@ -3,7 +3,7 @@ import io.qameta.allure.junit4.DisplayName;
 import org.junit.Test;
 
 import static org.apache.http.HttpStatus.*;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 public class UserCreationTest extends BaseUserTest {
 
@@ -24,21 +24,41 @@ public class UserCreationTest extends BaseUserTest {
         userSteps.createUser(email, password, name);
         userSteps.createUser(email, password, name)
                 .assertThat()
-                .statusCode(SC_FORBIDDEN);
+                .statusCode(SC_FORBIDDEN)
+                .body("success", equalTo(false))
+                .body("message", equalTo("User already exists")); // Проверка сообщения об ошибке
     }
 
     @Test
-    @DisplayName("Создание пользователя без обязательных параметров")
-    @Description("Тест проверяет попытку создания пользователя без указания обязательных полей.")
-    public void createUserWithoutRequiredParams() {
-        // Проверка отсутствия пароля
+    @DisplayName("Создание пользователя без пароля")
+    @Description("Тест проверяет попытку создания пользователя без указания пароля.")
+    public void createUserWithoutPassword() {
         userSteps.createUserWithoutPassword(email, name)
                 .assertThat()
-                .statusCode(SC_FORBIDDEN);
+                .statusCode(SC_FORBIDDEN)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Email, password and name are required fields")); // Проверка сообщения об ошибке
+    }
 
-        // Проверка отсутствия email
+    @Test
+    @DisplayName("Создание пользователя без email")
+    @Description("Тест проверяет попытку создания пользователя без указания email.")
+    public void createUserWithoutEmail() {
         userSteps.createUserWithoutEmail(password, name)
                 .assertThat()
-                .statusCode(SC_FORBIDDEN);
+                .statusCode(SC_FORBIDDEN)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Email, password and name are required fields")); // Проверка сообщения об ошибке
+    }
+
+    @Test
+    @DisplayName("Создание пользователя без имени")
+    @Description("Тест проверяет попытку создания пользователя без указания имени.")
+    public void createUserWithoutName() {
+        userSteps.createUserWithoutName(email, password)
+                .assertThat()
+                .statusCode(SC_FORBIDDEN)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Email, password and name are required fields")); // Проверка сообщения об ошибке
     }
 }

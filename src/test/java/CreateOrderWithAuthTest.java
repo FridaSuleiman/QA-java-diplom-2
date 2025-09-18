@@ -15,21 +15,24 @@ import java.util.List;
 import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-public class CreateOrderTest {
+public class CreateOrderWithAuthTest {
     private OrderSteps orderSteps;
     private UserSteps userSteps;
-    private String name;
     private String password;
     private String email;
-    protected String accessToken;
+    private String accessToken;
 
     @Before
     public void setUp() {
         orderSteps = new OrderSteps(new OrderClient());
         userSteps = new UserSteps(new UserClient());
-        name = RandomStringUtils.randomAlphabetic(10);
+        String name = RandomStringUtils.randomAlphabetic(10);
         password = RandomStringUtils.randomAlphabetic(10);
         email = RandomStringUtils.randomAlphabetic(10) + "@mail.test";
+
+        // Создание пользователя и получение токена в @Before
+        userSteps.createUser(email, password, name);
+        accessToken = userSteps.getUserToken(email, password);
     }
 
     @After
@@ -42,26 +45,10 @@ public class CreateOrderTest {
     }
 
     @Test
-    @DisplayName("Создать заказ без авторизации с валидными ингредиентами")
-    @Description("Тест проверяет создание заказа без авторизации пользователя с валидным списком ингредиентов. " +
-            "Ожидается успешное создание заказа с кодом ответа 200 и флагом success=true.")
-    public void createOrderValidIngredientsWithoutAuth() {
-        ValidatableResponse ingredientsInfo = orderSteps.getIngridients();
-        List<String> ingredientsList = orderSteps.chooseIngridients(ingredientsInfo, 5);
-
-        orderSteps.createOrderWithoutAuth(ingredientsList)
-                .assertThat()
-                .statusCode(SC_OK)
-                .body("success", equalTo(true));
-    }
-
-    @Test
     @DisplayName("Создать заказ с авторизацией с валидными ингредиентами")
     @Description("Тест проверяет создание заказа с авторизацией пользователя с валидным списком ингредиентов. " +
             "Ожидается успешное создание заказа с кодом ответа 200 и флагом success=true.")
     public void createOrderValidIngredientsWithAuth() {
-        userSteps.createUser(email, password, name);
-        accessToken = userSteps.getUserToken(email, password);
         ValidatableResponse ingredientsInfo = orderSteps.getIngridients();
         List<String> ingredientsList = orderSteps.chooseIngridients(ingredientsInfo, 5);
 
@@ -76,7 +63,7 @@ public class CreateOrderTest {
     @Description("Тест проверяет создание заказа с пустым списком ингредиентов. " +
             "Ожидается ответ с кодом ошибки 400 (Bad Request).")
     public void createOrderNoneIngredients() {
-        orderSteps.createOrderWithoutAuth(new ArrayList<>())
+        orderSteps.createOrderWithAuth(new ArrayList<>(), accessToken)
                 .assertThat()
                 .statusCode(SC_BAD_REQUEST);
     }
@@ -89,7 +76,7 @@ public class CreateOrderTest {
         ArrayList<String> invalidIngredient = new ArrayList<>();
         invalidIngredient.add("invalidIngredient");
 
-        orderSteps.createOrderWithoutAuth(invalidIngredient)
+        orderSteps.createOrderWithAuth(invalidIngredient, accessToken)
                 .assertThat()
                 .statusCode(SC_INTERNAL_SERVER_ERROR);
     }

@@ -48,6 +48,17 @@ public class UserSteps {
                 .then();
     }
 
+    @Step("Создание пользователя без имени")
+    public ValidatableResponse createUserWithoutName(String email, String password) {
+        CreateUserRequest createUserRequest = CreateUserRequest.builder()
+                .email(email)
+                .password(password)
+                .build();
+
+        return userClient.createUser(createUserRequest)
+                .then();
+    }
+
     @Step("Авторизация пользователя")
     public ValidatableResponse loginUser(String email, String password) {
         LoginUserRequest loginUserRequest = LoginUserRequest.builder()
@@ -67,9 +78,9 @@ public class UserSteps {
     }
 
     @Step("Удаление пользователя")
-    public void deleteUser(String email, String password) {
+    public ValidatableResponse deleteUser(String email, String password) {
         String bearerToken = getUserToken(email, password);
-        userClient.deleteUser(bearerToken)
+        return userClient.deleteUser(bearerToken)
                 .then();
     }
 
