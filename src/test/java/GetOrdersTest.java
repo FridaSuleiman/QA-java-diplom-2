@@ -12,6 +12,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.util.List;
 
 import static org.apache.http.HttpStatus.*;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
 public class GetOrdersTest {
@@ -101,6 +102,8 @@ public class GetOrdersTest {
     public void getUserOrdersWithoutAuth() {
         orderSteps.getUserOrdersWithoutAuth()
                 .assertThat()
-                .statusCode(SC_UNAUTHORIZED);
+                .statusCode(SC_UNAUTHORIZED)
+                .body("success", equalTo(false))
+                .body("message", equalTo("You should be authorised"));
     }
 }
